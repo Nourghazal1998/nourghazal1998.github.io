@@ -358,14 +358,7 @@
   <p>© 2026 Nour Gazzal · Built with HTML &amp; CSS · Hosted on GitHub Pages</p>
 </footer>
 
-
-
-  <!--
-  Chat widget for nourghazal1998.github.io
-  Paste this block anywhere in your existing HTML (e.g. before </body>).
-  Replace BACKEND_URL below with your deployed Render/Railway URL.
--->
-
+<!-- ─── CHAT WIDGET ───────────────────────────────────────── -->
 <style>
   #nour-chat-toggle {
     position: fixed; bottom: 20px; right: 20px; z-index: 1000;
@@ -413,7 +406,6 @@
 </div>
 
 <script>
-  // ⚠️ Replace this with your deployed backend URL (e.g. from Render)
   const BACKEND_URL = "https://portfolio-bot-jdup.onrender.com/chat";
 
   const toggleBtn = document.getElementById("nour-chat-toggle");
@@ -449,7 +441,11 @@
       });
       const data = await res.json();
       messages.lastChild.remove(); // remove "Thinking..."
-      addMessage(data.answer, "bot");
+      if (!res.ok) {
+        addMessage("Error: " + (data.detail || res.status), "bot");
+      } else {
+        addMessage(data.answer, "bot");
+      }
     } catch (err) {
       messages.lastChild.remove();
       addMessage("Sorry, something went wrong. Please try again.", "bot");
