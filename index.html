@@ -69,7 +69,45 @@
   <div class="section-label">Work</div>
   <h2>Projects</h2>
 
-  <div class="projects-grid">
+  <style>
+    .carousel-wrapper { position: relative; display: flex; align-items: center; gap: 8px; }
+    .projects-grid {
+      display: flex !important;
+      gap: 24px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      padding-bottom: 4px;
+    }
+    .projects-grid::-webkit-scrollbar { display: none; }
+    .projects-grid .project-card {
+      flex: 0 0 340px;
+      scroll-snap-align: start;
+    }
+    .carousel-arrow {
+      flex-shrink: 0;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border, #ddd);
+      background: white;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      transition: background 0.15s;
+    }
+    .carousel-arrow:hover { background: #f0f0f0; }
+    .carousel-arrow:disabled { opacity: 0.3; cursor: default; }
+    @media (max-width: 640px) {
+      .carousel-arrow { display: none; }
+    }
+  </style>
+
+  <div class="carousel-wrapper">
+    <button class="carousel-arrow" id="projects-prev" aria-label="Previous project">&#8592;</button>
+
+    <div class="projects-grid" id="projects-grid">
 
     <!-- Project 1: Crack Width -->
     <div class="project-card">
@@ -222,7 +260,35 @@
       </div>
     </div>
 
+    </div>
+
+    <button class="carousel-arrow" id="projects-next" aria-label="Next project">&#8594;</button>
   </div>
+
+  <script>
+    (function () {
+      const grid = document.getElementById("projects-grid");
+      const prevBtn = document.getElementById("projects-prev");
+      const nextBtn = document.getElementById("projects-next");
+
+      function scrollByCard(direction) {
+        const card = grid.querySelector(".project-card");
+        const cardWidth = card ? card.offsetWidth + 24 : 340; // 24 = gap
+        grid.scrollBy({ left: direction * cardWidth, behavior: "smooth" });
+      }
+
+      function updateArrows() {
+        prevBtn.disabled = grid.scrollLeft <= 4;
+        nextBtn.disabled = grid.scrollLeft >= grid.scrollWidth - grid.clientWidth - 4;
+      }
+
+      prevBtn.addEventListener("click", () => scrollByCard(-1));
+      nextBtn.addEventListener("click", () => scrollByCard(1));
+      grid.addEventListener("scroll", updateArrows);
+      window.addEventListener("resize", updateArrows);
+      updateArrows();
+    })();
+  </script>
 </section>
 
 <div class="divider"></div>
